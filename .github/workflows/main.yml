@@ -18,14 +18,22 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Deploy to Hugging Face Spaces
+    - name: Login to Hugging Face
+      run: huggingface-cli login "${{ secrets.HF_TOKEN }}"
       env:
-        HF_USERNAME: ${{ secrets.HF_USERNAME }}
         HF_TOKEN: ${{ secrets.HF_TOKEN }}
+    - name: Configure git settings
       run: |
-        huggingface-cli login $HF_TOKEN
+        git config --global user.email "ubaid311113@gmail.com"
+        git config --global user.name "Muhammad Ubaid Ullah Usman"
+    - name: Deploy to Hugging Face Spaces
+      run: |
         cd my_ml_project
         git lfs install
         git add .
-        git commit -m "Deploy model to Hugging Face Spaces"
-        git push
+        git status  # Check the status to debug if nothing to commit
+        git commit -m "Deploy model to Hugging Face Spaces" || echo "No changes to commit"
+        git push || echo "Failed to push changes"
+      env:
+        HF_USERNAME: ${{ secrets.HF_USERNAME }}
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
