@@ -29,7 +29,7 @@ jobs:
     - name: Configure git settings
       run: |
         git config --global user.email "ubaid311113@gmail.com"
-        git config --global user.name "Muhammad Ubaid Ullah Usman"
+        git config --global user.name "ubaidullaah"
 
     - name: Deploy to Hugging Face Spaces
       run: |
