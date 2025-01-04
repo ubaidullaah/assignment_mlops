@@ -18,7 +18,7 @@ jobs:
       # Add Hugging Face remote
       - name: Authenticate and Set Remote
         run: |
-          git remote add space https://x-access-token:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/ubaaid311113/mlops_assignment
+          git remote add space https://x-access-token:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/ubaid311113/mlops_assignment
 
       # Push to Hugging Face Hub
       - name: Push to Hugging Face Hub
