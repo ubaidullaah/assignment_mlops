@@ -1,44 +1,26 @@
-name: Deploy to Hugging Face Spaces
-
+name: Sync to Hugging Face hub
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+
+  # to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  sync-to-hub:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+      # Checkout code from private repository
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.8'
+      # Add Hugging Face remote
+      - name: Authenticate and Set Remote
+        run: |
+          git remote add space https://x-access-token:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/ubaaid311113/mlops_assignment
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-
-    - name: Login to Hugging Face
-      run: huggingface-cli login ${{ secrets.HF_TOKEN }}
-      env:
-        HF_TOKEN: ${{ secrets.HF_TOKEN }}
-
-    - name: Configure git settings
-      run: |
-        git config --global user.email "ubaid311113@gmail.com"
-        git config --global user.name "ubaidullaah"
-
-    - name: Deploy to Hugging Face Spaces
-      run: |
-        cd my_ml_project
-        git lfs install
-        git add .
-        git status  # Check the status to debug if nothing to commit
-        git commit -m "Deploy model to Hugging Face Spaces" || echo "No changes to commit"
-        git push || echo "Failed to push changes"
-      env:
-        HF_USERNAME: ${{ secrets.HF_USERNAME }}
-        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      # Push to Hugging Face Hub
+      - name: Push to Hugging Face Hub
+        run: |
+          git push --force space main
